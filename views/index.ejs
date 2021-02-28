@@ -1,0 +1,112 @@
+<!doctype html>
+<script>
+  function enroll(title, id) {
+    if (confirm(title + " 강의를 신청하시겠습니까?") == true) { // 확인
+      $.ajax({
+        type: "POST",
+        url: "/enroll",
+        data: {
+          lec_id: id
+        },
+        dataType: "json",
+        success: function(data) {
+          if (data.result == true)
+            alert("수강신청 완료!");
+          else {
+            alert(data.message);
+          }
+        },
+        error: function(e) {
+          alert("수강신청 실패했습니다. 다시 시도해주세요.");
+        }
+      });
+    } else { // 취소
+      return false;
+    }
+  }
+</script>
+
+<div id="lecture" class="popular_courses">
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="section_title text-center mb-50">
+          <h3>최근 개설 강의</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="all_courses">
+    <div class="container">
+          <div class="row">
+            <% if(lecdata) { lecdata.forEach(function (item, index) { %>
+            <div class="col-xl-4 col-lg-4 col-md-6">
+              <div class="single_courses">
+                <div class="thumb">
+                  <video class="img-fluid fluid" src=<%=item.video %> style="pointer-events: none;">
+                </div>
+                <div class="courses_info">
+                  <span>[<%= item.prof_id %>]</span>
+                  <h3><%= item.title %></h3>
+                  <span><%= item.exp %></span>
+                  <!-- <div class="more_courses text-center">
+                    <a onclick="enroll('<%= item.title %>', <%= item.id %>);" class="boxed_btn_orange">수강신청</a>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+            <% }); } %>
+          </div>
+          <div class="more_courses text-center">
+            <a href="/all" class="boxed_btn_rev">모든 강의 보기</a>
+          </div>
+    </div>
+  </div>
+</div>
+
+<% if(enrolldata) { %>
+<div id="enroll" class="popular_courses">
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="section_title text-center mb-50">
+          <h3>수강 강의</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="all_courses">
+    <div class="container">
+      <div>
+        <div>
+          <% if(enrolldata.length < 1) { %>
+            <div class="more_courses text-center">
+              <p>조회된 강의가 없습니다.</p>
+              <a href="/all" class="boxed_btn_rev">수강신청하러 가기</a>
+            </div>
+            <% }%>
+          <div class="row">
+            <% enrolldata.forEach(function (item, index) { %>
+            <div class="col-xl-4 col-lg-4 col-md-6">
+              <div class="single_courses">
+                <div class="thumb">
+                  <video class="img-fluid fluid" src=<%=item.video %>>
+                </div>
+                <div class="courses_info">
+                  <span>[<%= item.prof_id %>]</span>
+                  <h3><%= item.title %></h3>
+                  <span><%= item.exp %></span>
+                  <!-- <div class="more_courses text-center">
+                    <a href="/lecture/video/?lec_id=<%= item.lec_id %>" class="boxed_btn_orange">강의 듣기</a>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<% } %>

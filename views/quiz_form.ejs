@@ -1,0 +1,93 @@
+<!doctype html>
+<script>
+  function enroll(id) {
+    let question = $("#question").val();
+    let ex1 = $("#ex1").val();
+    let ex2 = $("#ex2").val();
+    let ex3 = $("#ex3").val();
+    let ex4 = $("#ex4").val();
+
+    if (!question || !ex1 || !ex2 || !ex3 || !ex4) {
+      alert("퀴즈정보를 모두 입력해주세요");
+    } else {
+      $.ajax({
+        type: "POST",
+        url: "/quiz/prof",
+        data: {
+          lec_id: id,
+          question: question,
+          ex1: ex1,
+          ex2: ex2,
+          ex3: ex3,
+          ex4: ex4,
+          answer: $(":input:radio[name=answer]:checked").val()
+        },
+        dataType: "json",
+        success: function(data) {
+          if (data.result == true) {
+            alert("퀴즈출제 완료!");
+            document.location.href = '/';
+          } else {
+            alert(data.message);
+          }
+        },
+        error: function(e) {
+          alert("퀴즈출제에 실패했습니다. 다시 시도해주세요.");
+          window.history.back();
+        }
+      });
+    }
+  }
+</script>
+
+<div class="slider_area">
+  <div class="single_slider d-flex align-items-center justify-content-center breadcam_bg overlay2" style="height:100vh;">
+    <div class="popup_box">
+      <div class="popup_inner">
+        <h3>퀴즈 출제</h3>
+        <form id="quiz">
+          <div class="row">
+            <div class="col-xl-12 col-md-12">
+              <input type="text" name="question" id="question" placeholder="문제를 입력하세요" required>
+            </div>
+            <div class="row col-xl-6 col-md-6">
+              <div class="col-xl-2 col-md-2">
+                <input style="width:15px; height:15px;" type="radio" name="answer" value="1" checked>
+              </div>
+              <div class="col-xl-10 col-md-10">
+                <input type="text" name="ex1" id="ex1" placeholder="보기1" required>
+              </div>
+            </div>
+            <div class="row col-xl-6 col-md-6">
+              <div class="col-xl-2 col-md-2">
+                <input style="width:15px; height:15px;" type="radio" name="answer" value="2">
+              </div>
+              <div class="col-xl-10 col-md-10">
+                <input type="text" name="ex2" id="ex2" placeholder="보기2" required>
+              </div>
+            </div>
+            <div class="row col-xl-6 col-md-6">
+              <div class="col-xl-2 col-md-2">
+                <input style="width:15px; height:15px;" type="radio" name="answer" value="3">
+              </div>
+              <div class="col-xl-10 col-md-10">
+                <input type="text" name="ex3" id="ex3" placeholder="보기3" required>
+              </div>
+            </div>
+            <div class="row col-xl-6 col-md-6">
+              <div class="col-xl-2 col-md-2">
+                <input style="width:15px; height:15px;" type="radio" name="answer" value="4">
+              </div>
+              <div class="col-xl-10 col-md-10">
+                <input type="text" name="ex4" id="ex4" placeholder="보기4" required>
+              </div>
+            </div>
+            <div class="col-xl-12">
+              <button onclick="enroll(<%= data %>);" type="button" class="boxed_btn_orange">확인</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

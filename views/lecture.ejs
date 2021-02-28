@@ -1,0 +1,58 @@
+<!doctype html>
+<script>
+  $(window).bind('beforeunload', function(e) {
+    save();
+    // return 'DataTest';
+    (e || window.event).returnValue = 'Are you sure you want to close this page?';
+  })
+
+  function save() {
+    $.ajax({
+      type: "POST",
+      url: "/lecture/video",
+      data: {
+        lec_id: document.getElementById("lec_id").innerHTML,
+        progress: document.getElementById("video").currentTime
+      },
+      dataType: "json",
+      success: function(data) {
+        if (data.result == true) {
+          alert("학습정보 저장 완료!");
+        } else {
+          alert(data.message);
+        }
+      },
+      error: function(e) {
+        alert("다시 시도해주세요.");
+      }
+    });
+  }
+</script>
+
+<div class="slider_area">
+  <div class="single_slider d-flex align-items-center justify-content-center breadcam_bg overlay2" style="height:100vh;">
+    <div class="popup_box">
+      <% if(lecdata) { %>
+      <div class="popup_inner">
+        <span style="color: white;">[<%= lecdata[0].prof_id %>]</span>
+        <span style="color: white;"><%= lecdata[0].exp %></span>
+        <span id="lec_id" style="visibility: hidden;"><%= lecdata[0].lec_id %></span>
+        <h3><%= lecdata[0].title %></h3>
+        <div class="col-xl-12 col-md-12">
+          <video id="video" class="img-fluid fluid" src='<%= lecdata[0].video %>#t=<%= lecdata[0].progress %>' controls>
+        </div>
+        <hr>
+        <% if(quizdata) { quizdata.forEach(function (item, index) { %>
+        <div class="col-xl-12">
+          <% if(item.score === 0) { %>
+            <a style="color: white" href="/quiz/learner/?quiz_id=<%= item.id %>">퀴즈  #<%= index+1 %></a>
+          <% } else { %>
+              <a style="color: white; cursor: not-allowed;">퀴즈 #<%= index+1 %></a><span class="badge badge-info ml-2">제출완료</span>
+          <% } %>
+        </div>
+        <% }); } %>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div class="slider_area">
+    <div class="single_slider d-flex align-items-center justify-content-center breadcam_bg overlay2"  style="height:100vh;">
+      <div class="popup_box" style="background: #FFF">
+        <div class="popup_inner">
+          <h3 style="color: #000">[<%= warn_title %>]</h3>
+          <hr>
+          <p class="card-text"> <%= warn_message %></p>
+          <a class="boxed_btn_orange" role="button" href=<%=return_url%>>돌아가기</a>
+          <hr>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<div class="popular_courses">
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="section_title text-center mb-100">
+          <h3><%= reglabel %> 님의 개설 강의</h3>
+          <div class="more_courses text-center">
+            <a href="/lecture/reg" class="boxed_btn_rev">강의 등록</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="all_courses">
+    <div class="container">
+      <div>
+        <div>
+          <div class="row">
+            <% if(lecdata) { lecdata.forEach(function (item, index) { %>
+            <div class="col-xl-4 col-lg-4 col-md-6">
+              <div class="single_courses">
+                <div class="thumb">
+                  <a href="#">
+                    <video class="img-fluid fluid" src=<%=item.video %> controls>
+                  </a>
+                </div>
+                <div class="courses_info">
+                  <h3><%= item.title %></h3>
+                  <span><%= item.exp %></span>
+                  <div class="more_courses text-center">
+                    <a href="/enroll/info/?lec_id=<%= item.id %>" class="genric-btn circle primary mt-1">학습자 정보</a>
+                    <a href="/quiz/prof/?lec_id=<%= item.id %>" class="genric-btn circle success mt-1">퀴즈 출제</a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <% }); } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

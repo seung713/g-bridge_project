@@ -1,0 +1,55 @@
+<!doctype html>
+<script>
+  function reg() {
+    var form = $('#reg')[0];
+    var data = new FormData(form);
+
+    $.ajax({
+      type: "POST",
+      enctype: "multipart/form-data",
+      url: "/lecture/reg",
+      data: data,
+      dataType: "json",
+      processData: false,
+      contentType: false,
+      cache: false,
+      success: function(data) {
+        if (data.result == true) {
+          alert("강의등록 완료!");
+          document.location.href = '/';
+        } else {
+          alert(data.message);
+        }
+      },
+      error: function(e) {
+        alert("강의등록에 실패했습니다. 다시 시도해주세요.");
+        window.history.back();
+      }
+    });
+  }
+</script>
+<div class="slider_area">
+  <div class="single_slider d-flex align-items-center justify-content-center breadcam_bg overlay2"  style="height:100vh;">
+    <div class="popup_box">
+      <div class="popup_inner">
+        <h3>강의 등록</h3>
+        <form id="reg" method="post" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-xl-12 col-md-12">
+              <input type="text" name="title" placeholder="강의 제목" required>
+            </div>
+            <div class="col-xl-12 col-md-12">
+              <input type="text" name="exp" placeholder="강의 설명" required>
+            </div>
+            <div class="col-xl-12 col-md-12">
+              <input style="color: white; " type="file" id="entry" width="10px" aria-describedby="entry2" accept="video/*" name="video" required>
+            </div>
+            <div class="col-xl-12">
+              <button onclick="reg();" type="button" class="boxed_btn_orange">확인</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

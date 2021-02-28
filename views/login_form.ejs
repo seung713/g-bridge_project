@@ -1,0 +1,52 @@
+<!doctype html>
+<script>
+function login() {
+  let id = $("#id").val();
+  let pw1 = $("#pw").val();
+  if(!id || !pw1) {
+      alert("회원정보를 모두 입력해주세요");
+  } else {
+    $.ajax({
+      type: "POST",
+      url: "/user/auth",
+      data: $("#login").serialize(),
+      dataType: 'json',
+      success: function(data) {
+        if (data.result == true) {
+          document.location.href = '/';
+          // window.location.replace("http://localhost:65037/");
+        } else {
+          alert(data.message);
+        }
+      },
+      error: function(e) {
+        alert("로그인 실패했습니다. 다시 시도해주세요.");
+      }
+    });
+  }
+}
+</script>
+<div class="slider_area">
+  <div class="single_slider d-flex align-items-center justify-content-center breadcam_bg overlay2"  style="height:100vh;">
+    <div class="popup_box">
+      <div class="popup_inner">
+        <h3>로그인</h3>
+        <form id="login" method="post">
+          <div class="row">
+            <div class="col-xl-12 col-md-12">
+              <input type="text" name="id" id="id" placeholder="아이디" required>
+            </div>
+            <div class="col-xl-12 col-md-12">
+              <input type="password" name="pw"id="pw" placeholder="비밀번호" required>
+            </div>
+            <div class="col-xl-12">
+              <button onclick="login();" type="button" class="boxed_btn_orange">로그인</button>
+            </div>
+          </div>
+        </form>
+        <p class="doen_have_acc">회원이 아니신가요?<a class="dont-hav-acc ml-3" href="/user/reg">회원가입</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

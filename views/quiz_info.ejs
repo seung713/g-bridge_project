@@ -1,0 +1,65 @@
+<!doctype html>
+<script>
+  function del(id) {
+    if (confirm("해당 퀴즈를 삭제하시겠습니까?") == true) { // 확인
+      $.ajax({
+        type: "POST",
+        url: "/quiz/delete",
+        data: {
+          quiz_id: id
+        },
+        dataType: "json",
+        success: function(data) {
+          if (data.result == true) {
+            alert("퀴즈 삭제 완료!");
+            window.location.reload();
+          } else {
+            alert(data.message);
+          }
+        },
+        error: function(e) {
+          alert("다시 시도해주세요.");
+        }
+      });
+    } else { // 취소
+      return false;
+    }
+  }
+</script>
+<div class="bradcam_area breadcam_bg overlay2">
+  <h3><%= reglabel %> 님의 퀴즈 정보</h3>
+</div>
+
+<div class="popular_courses">
+  <div class="all_courses">
+    <div class="container">
+      <table class="table text-center">
+        <thead>
+          <tr>
+            <th>순번</th>
+            <th>강의명</th>
+            <th>문제</th>
+            <th>정답</th>
+            <th></th>
+          </tr>
+          <thead>
+          <tbody>
+            <%  quizdata.forEach(function (item, index) { %>
+            <tr>
+              <td><%= index+1 %></td>
+              <td><%= item.title %></td>
+              <td><%= item.question %></td>
+              <td><%= item.answer %></td>
+              <td><a style="cursor: pointer;" onclick="del(<%= item.id %>);" class="badge badge-warning">삭제</a></td>
+            </tr>
+            <% }); %>
+          </tbody>
+      </table>
+      <% if(quizdata.length < 1) { %>
+      <div class="text-center">
+        <p>조회된 퀴즈가 없습니다.</p>
+      </div>
+      <% }%>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+<!doctype html>
+<script>
+  function submit(answer, id) {
+    let selected = $(":input:radio[name=answer]:checked").val();
+    if (answer == selected) {
+      score(id);
+    } else {
+      alert("오답입니다. 다시 풀어보세요.");
+    }
+  }
+
+  function score(id) {
+    $.ajax({
+      type: "POST",
+      url: "/quiz/learner",
+      data: {quiz_id:id},
+      dataType: "json",
+      success: function(data) {
+        if (data.result == true) {
+            alert("정답입니다. DB 저장 완료");
+          window.history.back();
+        } else {
+          alert(data.message);
+        }
+      },
+      error: function(e) {
+        alert("퀴즈제출에 실패했습니다. 다시 시도해주세요.");
+      }
+    });
+  }
+</script>
+<div class="slider_area">
+  <div class="single_slider d-flex align-items-center justify-content-center breadcam_bg overlay2" style="height:100vh;">
+    <div class="popup_box">
+      <div class="popup_inner" style="color: white;">
+        <h3>퀴즈</h3>
+        <% if(quizdata) { %>
+        <form>
+          <div class="row">
+            <div class="col-xl-12 col-md-12">
+              <p>Q. <%= quizdata[0].question %></p>
+            </div>
+            <div class="row col-xl-6 col-md-6">
+              <div class="col-xl-2 col-md-2">
+                <input style="width:15px; height:15px;" type="radio" name="answer" value="1">
+              </div>
+              <div class="col-xl-10 col-md-10">
+                <p><%= quizdata[0].ex1 %></p>
+              </div>
+            </div>
+            <div class="row col-xl-6 col-md-6">
+              <div class="col-xl-2 col-md-2">
+                <input style="width:15px; height:15px;" type="radio" name="answer" value="2">
+              </div>
+              <div class="col-xl-10 col-md-10">
+                <p><%= quizdata[0].ex2 %></p>
+              </div>
+            </div>
+            <div class="row col-xl-6 col-md-6">
+              <div class="col-xl-2 col-md-2">
+                <input style="width:15px; height:15px;" type="radio" name="answer" value="3">
+              </div>
+              <div class="col-xl-10 col-md-10">
+                <p><%= quizdata[0].ex3 %></p>
+              </div>
+            </div>
+            <div class="row col-xl-6 col-md-6">
+              <div class="col-xl-2 col-md-2">
+                <input style="width:15px; height:15px;" type="radio" name="answer" value="4">
+              </div>
+              <div class="col-xl-10 col-md-10">
+                <p><%= quizdata[0].ex4 %></p>
+              </div>
+            </div>
+            <div class="col-xl-12 col-md-12">
+              <a onclick="submit(<%= quizdata[0].answer %>, <%= quizdata[0].id %>);" class="boxed_btn_orange">제출하기</a>
+            </div>
+          </div>
+        </form>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>

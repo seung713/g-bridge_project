@@ -1,0 +1,65 @@
+<!doctype html>
+<script>
+  function reg() {
+    let id = $("#id").val();
+    let pw1 = $("#pw1").val();
+    let pw2 = $("#pw2").val();
+    let name = $("#name").val();
+    if(!id || !pw1 || !name) {
+        alert("회원정보를 모두 입력해주세요");
+    } else if (pw1 != pw2) {
+      alert("암호가 서로 다릅니다. 다시 입력하세요");
+    } else {
+      $.ajax({
+        type: "POST",
+        url: "/user/reg",
+        data: $("#reg").serialize(),
+        dataType: 'json',
+        success: function(data) {
+          if (data.result == true) {
+            alert("회원가입 완료!");
+            window.history.back();
+          } else {
+            alert(data.message);
+          }
+        },
+        error: function(e) {
+          alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+        }
+      });
+    }
+  }
+</script>
+
+<div class="slider_area">
+  <div class="single_slider d-flex align-items-center justify-content-center breadcam_bg overlay2"  style="height:100vh;">
+    <div class="popup_box">
+      <div class="popup_inner">
+        <h3>회원가입</h3>
+        <form id="reg" method="post">
+          <div class="row">
+            <div class="col-xl-12 col-md-12">
+              <input type="text" name="id" id="id" placeholder="아이디" required>
+            </div>
+            <div class="col-xl-12 col-md-12">
+              <input type="password" name="pw" id="pw1" placeholder="비밀번호" required>
+            </div>
+            <div class="col-xl-12 col-md-12">
+              <input type="password" id="pw2" placeholder="비밀번호 확인" required>
+            </div>
+            <div class="col-xl-12 col-md-12">
+              <input type="text" name="name" id="name" placeholder="이름" required>
+            </div>
+            <div class="col-xl-12 col-md-12">
+              <input style="width:15px; height:15px;" type="radio" name="category" value="0" checked><label for="radio">학습자</label>
+              <input style="width:15px; height:15px;" type="radio" name="category" value="1"><label for="radio">교수자</label>
+            </div>
+            <div class="col-xl-12">
+              <button onclick="reg();" type="button" class="boxed_btn_orange">회원가입</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
