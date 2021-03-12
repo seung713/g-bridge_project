@@ -4,7 +4,6 @@ const ejs = require('ejs');
 const url = require('url');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
-const session = require('express-session');
 const multer = require('multer');
 const upload = multer({
   dest: __dirname + '/../public/videos/uploads/lectures'
@@ -20,7 +19,7 @@ const db = mysql.createConnection({
   host: 'localhost', // DB서버 IP주소
   port: 3306, // DB서버 Port주소
   user: 'root', // DB접속 아이디
-  password: '111111', // DB암호
+  password: 'goaqjrj1#', // DB암호
   database: 'gbridge', //사용할 DB명
   multipleStatements: true // 다중쿼리
 });
@@ -56,13 +55,8 @@ const PrintLecRegForm = (req, res) => {
 // ------------------------------------  강의등록 기능 --------------------------------------
 const HandleLecReg = (req, res) => {
   let body = req.body;
-  let htmlstream = '';
   let video = '/videos/uploads/lectures/';
   let file = req.file;
-  let result = {
-    originalName: file.originalname,
-    size: file.size
-  }
   video = video + file.filename;
 
   db.query('INSERT INTO lecture (title, exp, prof_id, video) VALUES (?, ?, ?, ?)', [body.title, body.exp, req.session.who, video], (error, results, fields) => {
@@ -71,12 +65,10 @@ const HandleLecReg = (req, res) => {
         result: false,
         message: '강의등록 중 오류가 발생했습니다. 다시 시도해주세요.'
       });
-      // res.redirect('/');
     } else {
       res.json({
         result: true
       });
-      // res.redirect('/');
     }
   });
 };
@@ -164,10 +156,9 @@ router.post('/video', HandleLec);
 
 // ------------------------------------  강의정보 조회 기능 --------------------------------------
 const PrintLecInfo = (req, res) => {
-  let query = url.parse(req.url, true).query;
   htmlstream = '';
-  sql_str = '';
-  sql_str2 = '';
+  sql_cntUser = '';
+  sql_cntQuiz = '';
 
   if (req.session.auth && req.session.prof) {
     htmlstream = fs.readFileSync(__dirname + '/../views/prof_header.ejs', 'utf8');
@@ -177,7 +168,7 @@ const PrintLecInfo = (req, res) => {
       'Content-Type': 'text/html; charset=utf8'
     });
 
-    db.query('SELECT * FROM lecture WHERE prof_id = ? ORDER BY id;', [req.session.who], (error, results1, fields) => {
+    db.query('SELECT * FROM lecture WHERE prof_id = ? ORDER BY id;', [req.session.who], (error, results1) => {
       if (error) {
         htmlstream = fs.readFileSync(__dirname + '/../views/alert.ejs', 'utf8');
         res.status(562).end(ejs.render(htmlstream, {
@@ -187,11 +178,21 @@ const PrintLecInfo = (req, res) => {
           'return_url': '/'
         }));
       } else {
-        results1.forEach((item, index) => {
-          // sql_str += "SELECT count(e.user_id) AS learner,  count(DISTINCT q.id) AS quiz FROM enrolment AS e JOIN quiz AS q ON q.lec_id= e.lec_id WHERE q.lec_id ='" + item.id + "';";
-          sql_str += "SELECT count(user_id) as learner FROM enrolment WHERE lec_id ='" + item.id + "';";
+        if (results1.length <= 0) { // 조회결과가 없는 경우
+          res.end(ejs.render(htmlstream, {
+            'logurl': '/user/logout',
+            'loglabel': '로그아웃',
+            'regurl': '/',
+            'reglabel': req.session.who,
+            'warn_message': '조회된 강의가 없습니다.',
+            lecdata: results1
+          }));
+        } else {
+        results1.forEach((item) => {
+          sql_cntUser += "SELECT count(user_id) as learner FROM enrolment WHERE lec_id ='" + item.id + "';";
+          sql_cntQuiz += "SELECT count(DISTINCT id) as quiz FROM quiz WHERE lec_id ='" + item.id + "';";
         });
-        db.query(sql_str, (error, results2, fields) => {
+        db.query(sql_cntUser+sql_cntQuiz, (error, results2) => {
           if (error) {
             htmlstream = fs.readFileSync(__dirname + '/../views/alert.ejs', 'utf8');
             res.status(562).end(ejs.render(htmlstream, {
@@ -201,32 +202,18 @@ const PrintLecInfo = (req, res) => {
               'return_url': '/'
             }));
           } else {
-            results1.forEach((item, index) => {
-              sql_str2 += "SELECT count(DISTINCT id) as quiz FROM quiz WHERE lec_id ='" + item.id + "';";
-            });
-            db.query(sql_str2, (error, results3, fields) => {
-              if (error) {
-                htmlstream = fs.readFileSync(__dirname + '/../views/alert.ejs', 'utf8');
-                res.status(562).end(ejs.render(htmlstream, {
-                  'title': '알림',
-                  'warn_title': 'DB 오류',
-                  'warn_message': '강의정보 조회 중 오류가 발생했습니다. 다시 시도해주세요.',
-                  'return_url': '/'
-                }));
-              } else {
-                res.end(ejs.render(htmlstream, {
-                  'logurl': '/user/logout',
-                  'loglabel': '로그아웃',
-                  'regurl': '/',
-                  'reglabel': req.session.who,
-                  lecdata: results1,
-                  learner: results2,
-                  quiz: results3
-                }));
-              }
-            });
+            res.end(ejs.render(htmlstream, {
+              'logurl': '/user/logout',
+              'loglabel': '로그아웃',
+              'regurl': '/',
+              'reglabel': req.session.who,
+              lecdata: results1,
+              learner: results2[0],
+              quiz: results2[1]
+            }));
           }
         });
+        } 
       }
     });
   } else {
@@ -245,7 +232,7 @@ router.get('/info', PrintLecInfo);
 const DeleteLec = (req, res) => {
   let body = req.body;
 
-  db.query('DELETE FROM lecture WHERE id = ?;', [body.lec_id], (error, results, fields) => {
+  db.query('DELETE FROM lecture WHERE id = ?;', [body.lec_id], (error) => {
     if (error) {
       res.json({
         result: false,
