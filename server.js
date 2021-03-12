@@ -13,7 +13,6 @@ const   lecture = require('./routes/lecture');
 const   enroll = require('./routes/enroll');
 const   quiz = require('./routes/quiz');
 
-//const   PORT = 65037;
 const   PORT = 65037;
 
 // 실행환경 설정부분
@@ -30,11 +29,11 @@ app.use(session({ key: 'sid',
                   saveUninitialized: true })); // 세션id사용전에는 발급금지
 
 // URI와 핸들러를 매핑
-app.use('/', mainui);                 // URI (/) 접속하면 mainui로 라우팅
-app.use('/user', user);             // URI('/users') 접속하면 users로 라우팅
-app.use('/lecture', lecture);     // URI('/adminprod') 접속하면 adminprod로 라우팅
-app.use('/enroll', enroll);             // URI('/users') 접속하면 users로 라우팅
-app.use('/quiz', quiz);             // URI('/users') 접속하면 users로 라우팅
+app.use('/', mainui);
+app.use('/user', user);
+app.use('/lecture', lecture);
+app.use('/enroll', enroll);
+app.use('/quiz', quiz);
 
 // 서버를 실행합니다.
 app.listen(PORT, function () {
