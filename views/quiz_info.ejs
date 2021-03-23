@@ -50,7 +50,7 @@
               <td><%= item.title %></td>
               <td><%= item.question %></td>
               <td><%= item.answer %></td>
-              <td><a style="cursor: pointer;" onclick="del(<%= item.id %>);" class="badge badge-warning">삭제</a></td>
+              <td><a style="cursor: pointer;" onclick="del('<%= item.id %>');" class="badge badge-warning">삭제</a></td>
             </tr>
             <% }); %>
           </tbody>

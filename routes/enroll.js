@@ -4,7 +4,6 @@ const ejs = require('ejs');
 const url = require('url');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
-const session = require('express-session');
 const router = express.Router();
 
 router.use(bodyParser.urlencoded({
@@ -15,7 +14,7 @@ const db = mysql.createConnection({
   host: 'localhost', // DB서버 IP주소
   port: 3306, // DB서버 Port주소
   user: 'root', // DB접속 아이디
-  password: '111111', // DB암호
+  password: 'goaqjrj1#', // DB암호
   database: 'gbridge', //사용할 DB명
   multipleStatements: true // 다중쿼리
 });
@@ -26,14 +25,14 @@ const HandleEnrolment = (req, res) => {
   let sql_str = '';
 
   if (req.session.auth) {
-    db.query('INSERT INTO enrolment (user_id, lec_id) VALUES (?, ?)', [req.session.who, body.lec_id], (error, results, fields) => {
+    db.query('INSERT INTO enrolment (user_id, lec_id) VALUES (?, ?)', [req.session.who, body.lec_id], (error, _results1) => {
       if (error) {
         res.json({
           result: false,
           message: '이미 수강신청한 강의입니다.'
         });
       } else {
-        db.query('SELECT id FROM quiz WHERE lec_id = ?', [body.lec_id], (error, results2, fields) => {
+        db.query('SELECT id FROM quiz WHERE lec_id = ?', [body.lec_id], (error, results2) => {
           if (error) {
             res.json({
               result: false,
@@ -45,10 +44,10 @@ const HandleEnrolment = (req, res) => {
                 result: true
               });
             } else {
-              results2.forEach((item, index) => {
+              results2.forEach((item) => {
                 sql_str += "INSERT INTO quizCheck (quiz_id, user_id) VALUES ('" + item.id + "', '" + req.session.who + "');";
               });
-              db.query(sql_str, (error, results2, fields) => {
+              db.query(sql_str, (error, _results3) => {
                 if (error) {
                   res.json({
                     result: false,
@@ -107,10 +106,10 @@ const PrintLearnerInfo = (req, res) => {
             'return_url': '/'
           }));
         } else {
-          results[0].forEach((item, index) => {
+          results[0].forEach((item) => {
             sql_str += "SELECT sum(quizCheck.score) AS sum FROM quizCheck JOIN quiz ON quiz.id = quizCheck.quiz_id WHERE user_id ='" + item.user_id + "' and lec_id = '" + query.lec_id + "';";
           });
-          db.query(sql_str, (error, results1, fields) => {
+          db.query(sql_str, (error, results1) => {
             console.log(results1);
             if (error) {
               htmlstream = fs.readFileSync(__dirname + '/../views/alert.ejs', 'utf8');

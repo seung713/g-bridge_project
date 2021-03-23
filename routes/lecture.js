@@ -157,8 +157,7 @@ router.post('/video', HandleLec);
 // ------------------------------------  강의정보 조회 기능 --------------------------------------
 const PrintLecInfo = (req, res) => {
   htmlstream = '';
-  sql_cntUser = '';
-  sql_cntQuiz = '';
+  sql_str = '';
 
   if (req.session.auth && req.session.prof) {
     htmlstream = fs.readFileSync(__dirname + '/../views/prof_header.ejs', 'utf8');
@@ -189,10 +188,10 @@ const PrintLecInfo = (req, res) => {
           }));
         } else {
         results1.forEach((item) => {
-          sql_cntUser += "SELECT count(user_id) as learner FROM enrolment WHERE lec_id ='" + item.id + "';";
-          sql_cntQuiz += "SELECT count(DISTINCT id) as quiz FROM quiz WHERE lec_id ='" + item.id + "';";
+          sql_str += "SELECT count(user_id) as learner FROM enrolment WHERE lec_id ='" + item.id + "';";
+          sql_str += "SELECT count(DISTINCT id) as quiz FROM quiz WHERE lec_id ='" + item.id + "';";
         });
-        db.query(sql_cntUser+sql_cntQuiz, (error, results2) => {
+        db.query(sql_str, (error, results2) => {
           if (error) {
             htmlstream = fs.readFileSync(__dirname + '/../views/alert.ejs', 'utf8');
             res.status(562).end(ejs.render(htmlstream, {
@@ -208,8 +207,7 @@ const PrintLecInfo = (req, res) => {
               'regurl': '/',
               'reglabel': req.session.who,
               lecdata: results1,
-              learner: results2[0],
-              quiz: results2[1]
+              lqdata: results2
             }));
           }
         });

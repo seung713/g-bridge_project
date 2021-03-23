@@ -15,7 +15,7 @@ const db = mysql.createConnection({
   host: 'localhost', // DB서버 IP주소
   port: 3306, // DB서버 Port주소
   user: 'root', // DB접속 아이디
-  password: '111111', // DB암호
+  password: 'goaqjrj1#', // DB암호
   database: 'gbridge', //사용할 DB명
   multipleStatements: true // 다중쿼리
 });
@@ -96,7 +96,7 @@ const PrintQuiz = (req, res) => {
   htmlstream += fs.readFileSync(__dirname + '/../views/quiz.ejs', 'utf8');
   htmlstream += fs.readFileSync(__dirname + '/../views/footer.ejs', 'utf8');
 
-  db.query('SELECT * FROM quiz WHERE id =? ORDER BY id', [query.quiz_id], (error, results, fields) => {
+  db.query('SELECT * FROM quiz WHERE id =? ORDER BY id', [query.quiz_id], (error, results) => {
     if (error) {
       htmlstream = fs.readFileSync(__dirname + '/../views/alert.ejs', 'utf8');
       res.status(562).end(ejs.render(htmlstream, {

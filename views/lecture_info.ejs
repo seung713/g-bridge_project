@@ -51,18 +51,18 @@
               <td><%= index+1 %></td>
               <td><%= item.title %></td>
               <td><%= item.exp %></td>
-              <td><%= learner[index][0].learner %></td>
-              <td><%= quiz[index][0].quiz %> </td>
-              <td><a style="cursor: pointer;" onclick="del('<%= item.title %>', <%= item.id %>);" class="badge badge-warning">삭제</a></td>
+              <td><%= lqdata[index*2][0].learner %></td>
+              <td><%= lqdata[index*2+1][0].quiz %> </td>
+              <td><a style="cursor: pointer;" onclick="del('<%= item.title %>', '<%= item.id %>');" class="badge badge-warning">삭제</a></td>
             </tr>
             <% }); %>
           </tbody>
       </table>
       <% if(lecdata.length < 1) { %>
-      <div class="text-center">
-        <p>조회된 강의가 없습니다.</p>
-      </div>
-      <% }%>
+        <div class="text-center">
+          <p><%= warn_message %></p>
+        </div>
+      <% } %>
     </div>
   </div>
 </div>
